@@ -12,13 +12,13 @@
     
     self.addEventListener('activate', e => {
 
-        // console.log( e );
+        console.log( e );
 
 
     });
 
-    self.addEventListener('fetch', ( evento ) => {
-        // console.log(evento);
+    self.addEventListener('fetch', ( e ) => {
+        console.log(e);
 
     });
     
