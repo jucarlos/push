@@ -41,11 +41,11 @@
      // Notificaciones
     function verificaSuscripcion( activadas ) {
 
-        console.log( 'Activadas: ', activadas );
-        console.log( 'Permision:', Notification.permission);
+        //console.log( 'Activadas: ', activadas );
+        //console.log( 'Permision:', Notification.permission);
 
         if ( !window.Notification ) {
-            console.log('Este navegador no soporta push');
+            //console.log('Este navegador no soporta push');
             return;
         }
 
@@ -62,7 +62,7 @@
 
       //  if ( Notification.permission !== 'denied' || Notification.permission === 'default') {
 
-            console.log('ENTRANDO');
+            //console.log('ENTRANDO');
 
             Notification.requestPermission( permi => {
 
@@ -113,7 +113,7 @@
 
     function subscribir() {
 
-        console.log(' SUBSCRIBIENDO');
+        //console.log(' SUBSCRIBIENDO');
 
         if ( !swReg ) return console.log('No hay sw');
 
