@@ -13,6 +13,7 @@
 
         if ( url.includes('localhost') ) {
             swLocation = '/sw.js';
+            urlServices= 'http://10.128.222.79:3000/';
         }
 
         window.addEventListener('load', () => {
@@ -41,11 +42,18 @@
     function verificaSuscripcion( activadas ) {
 
         console.log( 'Activadas: ', activadas );
+        console.log( 'Permision:', Notification.permission);
 
         if ( !window.Notification ) {
             console.log('Este navegador no soporta push');
             return;
         }
+
+        if ( Notification.permission === 'granted' && activadas === null ){
+            // Por si no tiene bien las subscripcion
+            subscribir();
+        }
+        
 
      
         if ( Notification.permission !== 'granted') {
@@ -80,6 +88,7 @@
 
     }
 
+    
     function enviarNotificacion() {
 
         const notificationOpts = {
@@ -123,7 +132,7 @@
                     body: JSON.stringify( suscripcion )
                 })
                 .then ( verificaSuscripcion )
-                .catch ( console.log );
+                .catch ( cancelarSubscripcion );
 
               //  console.log( suscripcion );
                // verificaSuscripcion( suscripcion );
@@ -140,6 +149,17 @@
 
     //getPubliKey().then( console.log );
 
+
+    // Para desactivar las subscripciones también manualmente
+    function cancelarSubscripcion() {
+
+        swReg.pushManager.getSubscription()
+        .then ( subs => {
+            subs.unsubscribe().
+            then ( () => verificaSuscripcion( false ));
+
+        });
+    }
 
 
 
