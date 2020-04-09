@@ -4,21 +4,79 @@
 
     let swLocation = '/push/sw.js';
 
+    let urlServices = 'https://backend-marco.herokuapp.com/';
+
+    let swReg;
+
     // Verificar si podemos usar sw
     if ( navigator.serviceWorker ){
 
         if ( url.includes('localhost') ) {
             swLocation = '/sw.js';
         }
-        navigator.serviceWorker.register(swLocation);
+
+        window.addEventListener('load', () => {
+
+            
+            navigator.serviceWorker.register(swLocation)
+            .then ( ( reg ) => {
+
+                swReg = reg;
+
+                // si registra cualquier cosa distinta de undefines
+                // es que ya podemos llamar a la función que verifica
+                // la suscripbión. 
+                // llamo a verificaSuscrpcion sin paréntesis porque 
+                // quiereo que la llame inmediatamente
+                swReg.pushManager.getSubscription()
+                .then( verificaSuscripcion );
+
+            });
+        });
     }
 
 
 
      // Notificaciones
-    function verificaSuscripcion( activado ) {
+    function verificaSuscripcion( activadas ) {
 
-        return true;
+        console.log( 'Activadas: ', activadas );
+
+        if ( !window.Notification ) {
+            console.log('Este navegador no soporta push');
+            return;
+        }
+
+     
+        if ( Notification.permission !== 'granted') {
+            //     enviarNotificacion();
+            // } else
+
+      //  if ( Notification.permission !== 'denied' || Notification.permission === 'default') {
+
+            console.log('ENTRANDO');
+
+            Notification.requestPermission( permi => {
+
+                if ( permi === 'granted' ) {
+                    subscribir();
+                    
+                }
+            });
+        }
+
+        // if ( Notification.permission === 'granted') {
+        //     enviarNotificacion();
+        // } else if ( Notification.permission !== 'denied' || Notification.permission === 'default') {
+        //     Notification.requestPermission( ( permi ) => {
+
+        //         console.log( permi );
+
+        //         if ( permi === 'granted') {
+        //             enviarNotificacion();
+        //         }
+        //     });
+        // }
 
     }
 
@@ -35,38 +93,52 @@
             console.log(n);
         };
     }
-    function notificarme() {
-
-        if ( !window.Notification ) {
-            console.log('Este navegador no soporta push');
-            return;
-        }
-
-        if ( Notification.permission === 'granted') {
-            enviarNotificacion();
-        } else if ( Notification.permission !== 'denied' || Notification.permission === 'default') {
-            Notification.requestPermission( ( permi ) => {
-
-                console.log( permi );
-
-                if ( permi === 'granted') {
-                    enviarNotificacion();
-                }
-            });
-        }
-
-    }
 
     function getPubliKey() {
 
-        const url = 'https://backend-marco.herokuapp.com/push/key';
-         return fetch( url )
+        
+        return fetch( urlServices + 'push/key' )
         .then( res => res.arrayBuffer())
         .then ( key => new Uint8Array(key));
     }
 
+    function subscribir() {
 
-    getPubliKey().then( console.log );
+        console.log(' SUBSCRIBIENDO');
+
+        if ( !swReg ) return console.log('No hay sw');
+
+        getPubliKey().then( ( key ) => {
+
+            swReg.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: key
+            })
+            .then ( res => res.toJSON() )
+            .then ( suscripcion  => {
+
+                fetch( urlServices + 'push/subscribe', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify( suscripcion )
+                })
+                .then ( verificaSuscripcion )
+                .catch ( console.log );
+
+              //  console.log( suscripcion );
+               // verificaSuscripcion( suscripcion );
+
+            } );
+
+
+        });
+
+
+        
+    }
+
+
+    //getPubliKey().then( console.log );
 
 
 
