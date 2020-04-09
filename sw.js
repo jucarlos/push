@@ -34,7 +34,7 @@
       const opciones = {
         body: data.cuerpo,
         icon: 'images/icons/icon-72x72.png',
-        badge: 'img/badge.png',
+        badge: 'img/badgejccm.png',
         imagen: 'img/papascomunica.jpg',
         vibrate: [500,110,500,110,450,110,200,110,170,40,450,110,200,110,170,40,500],
         openUrl: '/'
