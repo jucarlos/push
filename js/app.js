@@ -127,6 +127,7 @@
             .then ( suscripcion  => {
 
                 suscripcion.usuario = 'jjcc114';
+                suscripcion.appname = 'apppapas2020';
 
                 fetch( urlServices + 'push/subscribe', {
                     method: 'POST',
@@ -162,9 +163,5 @@
 
         });
     }
-
-
-
-    
 
 }());
