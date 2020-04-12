@@ -126,6 +126,8 @@
             .then ( res => res.toJSON() )
             .then ( suscripcion  => {
 
+                suscripcion.usuario = 'jjcc114';
+
                 fetch( urlServices + 'push/subscribe', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
